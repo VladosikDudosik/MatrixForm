@@ -197,6 +197,8 @@ namespace MatrixForm
             {
                 try
                 {
+                    MessageBox.Show(GetMatrix(FirstMatrix).strMatrix);
+                    MessageBox.Show(GetMatrix(SecondMatrix).strMatrix);
                     results = GetMatrix(FirstMatrix).sub(GetMatrix(SecondMatrix)).strMatrix;
                     resultsTextBox.Text = GetMatrix(FirstMatrix).strMatrix;
                     resultsTextBox.Text += "\r\n*\r\n\r\n";
