@@ -16,20 +16,24 @@ namespace MatrixForm
         public Form1()
         {
             InitializeComponent();
+            resultsTextBox.Text = matrix.StrMatrix;
         }
-        public TextBox[,] FirstMatrix = new TextBox[,] {};
-        public TextBox[,] SecondMatrix = new TextBox[,] { };
-        public int columns = 0;
-        public int rows = 0;
+        TextBox[,] FirstMatrix = new TextBox[,] { };
+        TextBox[,] SecondMatrix = new TextBox[,] { };
         string results = String.Empty;
+        public Matrix A = new Matrix(new int[,] { { 6, 8 }, { 7, 5 }, { 5, 4 } });
+        public Matrix B = new Matrix(new int[,] { { 2, 4 }, { 1, 2 }, { 3, 1 } });
+        public Matrix F = new Matrix(new int[,] { { 1, 4, 5, 1 }, { 8, 3, 6, 3 } });
+        public Matrix K = new Matrix(new int[,] { { 1, 2, 3 }, { 5, 4, 6 }, { 7, 3, 4 } });
+        public Matrix matrix = new Matrix(new int[,] { { 1, 0, 0, 0 }, { 0, 2, 0, 0 }, { 0, 0, 3, 0 }, { 0, 0, 0, 4 } });
         //Help functions
         bool isEmpty(TextBox[,] temp)
         {
-            for(int i = 0; i < temp.GetLength(0); i++)
+            for (int i = 0; i < temp.GetLength(0); i++)
             {
-                for(int j = 0; j < temp.GetLength(1); j++)
+                for (int j = 0; j < temp.GetLength(1); j++)
                 {
-                    if(temp[i,j].Text == "")
+                    if (temp[i, j].Text == "")
                     {
                         return true;
                     }
@@ -51,20 +55,20 @@ namespace MatrixForm
             return new Matrix(buff1);
         }
         //Generate table for filling martrix`s values
-        void generateTable( ref TextBox[,] temp , Panel panel)
+        void generateTable(ref TextBox[,] temp, Panel panel)
         {
-            for(int i = 0; i < rows; i++)
+            for (int i = 0; i < temp.GetLength(0); i++)
             {
-                for(int j = 0; j < columns; j++)
+                for (int j = 0; j < temp.GetLength(1); j++)
                 {
                     temp[i, j] = new TextBox
                     {
                         Height = 40,
                         Width = 30,
-                        Location = new Point(j * 40 + 20,i*40  + 20)
+                        Location = new Point(j * 40 + 20, i * 40 + 20)
                     };
                     temp[i, j].KeyPress += onlyNumber;
-                    panel.Controls.Add(temp[i,j]);
+                    panel.Controls.Add(temp[i, j]);
                 }
             }
         }
@@ -73,7 +77,7 @@ namespace MatrixForm
         {
             char number = e.KeyChar;
 
-            if (!Char.IsDigit(number))
+            if (!(Char.IsDigit(number) || Char.IsControl(number)))
             {
                 e.Handled = true;
             }
@@ -90,22 +94,42 @@ namespace MatrixForm
                 }
             }
         }
+        //Fill TextBoxs Matrix`s values
+        TextBox[,] matrixToTextBoxs(Matrix a, Panel panel)
+        {
+            int[,] arr = a.ArrayMatrix;
+            TextBox[,] temp = new TextBox[arr.GetLength(0), arr.GetLength(1)];
+            for (int i = 0; i < temp.GetLength(0); i++)
+            {
+                for (int j = 0; j < temp.GetLength(1); j++)
+                {
+                    temp[i, j] = new TextBox
+                    {
+                        Text = arr[i, j].ToString(),
+                        Height = 40,
+                        Width = 30,
+                        Location = new Point(j * 40 + 20, i * 40 + 20)
+                    };
+                    temp[i, j].KeyPress += onlyNumber;
+                    panel.Controls.Add(temp[i, j]);
+                }
+            }
+            return temp;
+        }
         //--------------------------
         //Create matrices
         //Create table for first matrix
         private void CreateFirstMatrix_Click(object sender, EventArgs e)
         {
-            if(textBox1.Text != "" && textBox2.Text != "")
+            if (textBox1.Text != "" && textBox2.Text != "")
             {
                 panel1.Controls.Clear();
-                rows = int.Parse(textBox1.Text);
-                columns = int.Parse(textBox2.Text);
-                FirstMatrix = new TextBox[rows,columns];
-                generateTable(ref FirstMatrix,panel1);
+                FirstMatrix = new TextBox[int.Parse(textBox1.Text), int.Parse(textBox2.Text)];
+                generateTable(ref FirstMatrix, panel1);
             }
             else
             {
-                 MessageBox.Show("To create a Matrices you need to give up the numbers of columns and rows", "Oops", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("To create a Matrices you need to give up the numbers of columns and rows", "Oops", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         //Create table for second matrix
@@ -114,9 +138,7 @@ namespace MatrixForm
             if (textBox3.Text != "" && textBox4.Text != "")
             {
                 panel2.Controls.Clear();
-                rows = int.Parse(textBox4.Text);
-                columns = int.Parse(textBox3.Text);
-                SecondMatrix = new TextBox[rows, columns];
+                SecondMatrix = new TextBox[int.Parse(textBox4.Text), int.Parse(textBox3.Text)];
                 generateTable(ref SecondMatrix, panel2);
             }
             else
@@ -129,14 +151,14 @@ namespace MatrixForm
         //Product
         private void TransButton_Click(object sender, EventArgs e)
         {
-            if(!isEmpty(FirstMatrix))
+            if (!isEmpty(FirstMatrix))
             {
-                results = GetMatrix(FirstMatrix).transpose().strMatrix;
+                results = GetMatrix(FirstMatrix).transpose().StrMatrix;
                 resultsTextBox.Text = results;
             }
             else
             {
-                MessageBox.Show("Fill first matrix","Empty",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                MessageBox.Show("Fill first matrix", "Empty", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         //Addition
@@ -146,10 +168,10 @@ namespace MatrixForm
             {
                 try
                 {
-                    results = GetMatrix(FirstMatrix).add(GetMatrix(SecondMatrix)).strMatrix;
-                    resultsTextBox.Text = GetMatrix(FirstMatrix).strMatrix;
+                    results = GetMatrix(FirstMatrix).add(GetMatrix(SecondMatrix)).StrMatrix;
+                    resultsTextBox.Text = GetMatrix(FirstMatrix).StrMatrix;
                     resultsTextBox.Text += "\r\n+\r\n\r\n";
-                    resultsTextBox.Text += GetMatrix(SecondMatrix).strMatrix;
+                    resultsTextBox.Text += GetMatrix(SecondMatrix).StrMatrix;
                     resultsTextBox.Text += "\r\n=\r\n\r\n";
                     resultsTextBox.Text += results;
                 }
@@ -157,13 +179,13 @@ namespace MatrixForm
                 {
                     MessageBox.Show("Dimensions must be equal", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                
+
             }
             else
             {
                 MessageBox.Show("Fill first matrix", "Empty", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            
+
         }
         //Subtraction
         private void SubButton_Click(object sender, EventArgs e)
@@ -172,10 +194,10 @@ namespace MatrixForm
             {
                 try
                 {
-                    results = GetMatrix(FirstMatrix).sub(GetMatrix(SecondMatrix)).strMatrix;
-                    resultsTextBox.Text = GetMatrix(FirstMatrix).strMatrix;
+                    results = GetMatrix(FirstMatrix).sub(GetMatrix(SecondMatrix)).StrMatrix;
+                    resultsTextBox.Text = GetMatrix(FirstMatrix).StrMatrix;
                     resultsTextBox.Text += "\r\n-\r\n\r\n";
-                    resultsTextBox.Text += GetMatrix(SecondMatrix).strMatrix;
+                    resultsTextBox.Text += GetMatrix(SecondMatrix).StrMatrix;
                     resultsTextBox.Text += "\r\n=\r\n\r\n";
                     resultsTextBox.Text += results;
                 }
@@ -193,14 +215,14 @@ namespace MatrixForm
         //Product
         private void ProdButton_Click(object sender, EventArgs e)
         {
-            if(!isEmpty(FirstMatrix) && !isEmpty(SecondMatrix))
+            if (!isEmpty(FirstMatrix) && !isEmpty(SecondMatrix))
             {
                 try
                 {
-                    results = GetMatrix(FirstMatrix).sub(GetMatrix(SecondMatrix)).strMatrix;
-                    resultsTextBox.Text = GetMatrix(FirstMatrix).strMatrix;
+                    results = GetMatrix(FirstMatrix).prod(GetMatrix(SecondMatrix)).StrMatrix;
+                    resultsTextBox.Text = GetMatrix(FirstMatrix).StrMatrix;
                     resultsTextBox.Text += "\r\n*\r\n\r\n";
-                    resultsTextBox.Text += GetMatrix(SecondMatrix).strMatrix;
+                    resultsTextBox.Text += GetMatrix(SecondMatrix).StrMatrix;
                     resultsTextBox.Text += "\r\n=\r\n\r\n";
                     resultsTextBox.Text += results;
                 }
@@ -213,7 +235,7 @@ namespace MatrixForm
             {
                 MessageBox.Show("Fill matrices", "Empty", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-           
+
         }
         //--------------------------
         //Button for filling matrices random values
@@ -230,9 +252,10 @@ namespace MatrixForm
                 {
                     MessageBox.Show("Create two matrices", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }else if (checkBox1.Checked)
+            }
+            else if (checkBox1.Checked)
             {
-                if(FirstMatrix.Length != 0)
+                if (FirstMatrix.Length != 0)
                 {
                     FillRandomMatrix(FirstMatrix);
                 }
@@ -240,9 +263,10 @@ namespace MatrixForm
                 {
                     MessageBox.Show("Create first matrix", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }else if (checkBox2.Checked)
+            }
+            else if (checkBox2.Checked)
             {
-                if(SecondMatrix.Length != 0)
+                if (SecondMatrix.Length != 0)
                 {
                     FillRandomMatrix(SecondMatrix);
                 }
@@ -265,6 +289,30 @@ namespace MatrixForm
         private void ClearButton_Click(object sender, EventArgs e)
         {
             resultsTextBox.Text = "";
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (comboBox1.SelectedItem.ToString())
+            {
+                case "D = A - B":
+                    panel1.Controls.Clear();
+                    panel2.Controls.Clear();
+                    FirstMatrix = matrixToTextBoxs(A, panel1);
+                    SecondMatrix = matrixToTextBoxs(B, panel2);
+                    break;
+                case "C = D x F":
+                    Matrix D = A.sub(B);
+                    panel1.Controls.Clear();
+                    panel2.Controls.Clear();
+                    FirstMatrix = matrixToTextBoxs(D, panel1);
+                    SecondMatrix = matrixToTextBoxs(F, panel2);
+                    break;
+                case "Kt = K^T":
+                    panel1.Controls.Clear();
+                    FirstMatrix = matrixToTextBoxs(K, panel1);
+                    break;
+            }
         }
     }
 }

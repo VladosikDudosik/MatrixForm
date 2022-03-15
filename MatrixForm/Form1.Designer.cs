@@ -54,6 +54,7 @@
             this.FileName = new System.Windows.Forms.TextBox();
             this.saveToFileButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // textBox1
@@ -294,6 +295,19 @@
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "D = A - B",
+            "C = D x F",
+            "Kt = K^T"});
+            this.comboBox1.Location = new System.Drawing.Point(18, 430);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 24;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -301,6 +315,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(1002, 463);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.saveToFileButton);
             this.Controls.Add(this.FileName);
@@ -363,6 +378,7 @@
         private System.Windows.Forms.TextBox FileName;
         private System.Windows.Forms.Button saveToFileButton;
         private System.Windows.Forms.Button ClearButton;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
 

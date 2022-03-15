@@ -4,78 +4,65 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 public class Matrix
 {
-    public int[,] matrix { get; private set; }
-    public string strMatrix
+    public int[,] ArrayMatrix { get; private set; }
+    public string StrMatrix
     {
         get
         {
             string str = "";
-            for(int i = 0;i < matrix.GetLength(0); i++)
+            for (int i = 0; i < ArrayMatrix.GetLength(0); i++)
             {
-                for(int j = 0; j < matrix.GetLength(1); j++)
+                for (int j = 0; j < ArrayMatrix.GetLength(1); j++)
                 {
-                    str += matrix[i,j] + " ";
+                    str += ArrayMatrix[i, j] + " ";
                 }
                 str += "\r\n";
             }
             return str;
         }
     }
-    public int r
+    public int Rows
     {
         get
         {
-            return matrix.GetLength(0);
+            return ArrayMatrix.GetLength(0);
         }
         private set
         {
-            r = value;
+            Rows = value;
         }
     }
-    public int c
+    public int Columns
     {
         get
         {
-            return matrix.GetLength(1);
+            return ArrayMatrix.GetLength(1);
         }
         private set
         {
-            c = value;
+            Columns = value;
         }
     }
     public Matrix()
     {
-        matrix = new int[,] { { 0, 0, 0, }, { 0, 0, 0, }, { 0, 0, 0, } };
+        ArrayMatrix = new int[,] { { 0, 0, 0, }, { 0, 0, 0, }, { 0, 0, 0, } };
     }
     public Matrix(int[,] m)
     {
-        this.matrix = m;
-    }
-    public void show(string rowSpace = " ", string colSpace = "\n")
-    {
-        for (int i = 0; i < r; i++)
-        {
-            for (int j = 0; j < c; j++)
-            {
-                Console.Write(matrix[i, j].ToString() + rowSpace);
-            }
-            Console.Write(colSpace);
-        }
+        this.ArrayMatrix = m;
     }
     public Matrix add(Matrix m2)
     {
-
-        if (r == m2.r && c == m2.c)
+        if (Rows == m2.Rows && Columns == m2.Columns)
         {
-            int[,] tempMatrix = new int[r, c];
-            for (int i = 0; i < r; i++)
+            int[,] tempMatrix = new int[Rows, Columns];
+            for (int i = 0; i < Rows; i++)
             {
-                for (int j = 0; j < c; j++)
+                for (int j = 0; j < Columns; j++)
                 {
-                    tempMatrix[i, j] = matrix[i, j] + m2.matrix[i, j];
+                    tempMatrix[i, j] = ArrayMatrix[i, j] + m2.ArrayMatrix[i, j];
                 }
             }
             return new Matrix(tempMatrix);
@@ -91,14 +78,14 @@ public class Matrix
     }
     public Matrix sub(Matrix m2)
     {
-        if (r == m2.r && c == m2.c)
+        if (Rows == m2.Rows && Columns == m2.Columns)
         {
-            int[,] tempMatrix = new int[r, c];
-            for (int i = 0; i < r; i++)
+            int[,] tempMatrix = new int[Rows, Columns];
+            for (int i = 0; i < Rows; i++)
             {
-                for (int j = 0; j < c; j++)
+                for (int j = 0; j < Columns; j++)
                 {
-                    tempMatrix[i, j] = matrix[i, j] - m2.matrix[i, j];
+                    tempMatrix[i, j] = ArrayMatrix[i, j] - m2.ArrayMatrix[i, j];
                 }
             }
             return new Matrix(tempMatrix);
@@ -114,17 +101,17 @@ public class Matrix
     }
     public Matrix prod(Matrix m2)
     {
-        if (c == m2.r)
+        if (Columns == m2.Rows)
         {
-            int[,] tempMatrix = new int[r, m2.c];
-            for (int i = 0; i < r; i++)
+            int[,] tempMatrix = new int[Rows, m2.Columns];
+            for (int i = 0; i < Rows; i++)
             {
-                for (int j = 0; j < m2.c; j++)
+                for (int j = 0; j < m2.Columns; j++)
                 {
                     tempMatrix[i, j] = 0;
-                    for (int k = 0; k < c; k++)
+                    for (int k = 0; k < Columns; k++)
                     {
-                        tempMatrix[i, j] += matrix[i, k] * m2.matrix[k, j];
+                        tempMatrix[i, j] += ArrayMatrix[i, k] * m2.ArrayMatrix[k, j];
                     }
                 }
             }
@@ -141,16 +128,14 @@ public class Matrix
     }
     public Matrix transpose()
     {
-        int[,] tempMatrix = matrix;
-        for (int i = 0; i < r; i++)
+        int[,] resMatrix = new int[Columns, Rows];
+        for (int i = 0; i < Columns; i++)
         {
-            for (int j = i; j < c; j++)
+            for (int j = 0; j < Rows; j++)
             {
-                int temp = tempMatrix[i, j];
-                tempMatrix[i, j] = tempMatrix[j, i];
-                tempMatrix[j, i] = temp;
+                resMatrix[i, j] = ArrayMatrix[j, i];
             }
         }
-        return new Matrix(tempMatrix);
+        return new Matrix(resMatrix);
     }
 }
